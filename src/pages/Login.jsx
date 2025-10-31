@@ -23,7 +23,7 @@ function Login() {
       const data = await response.json();
       if (response.ok) {
         toast.success("Login successful!");
-        localStorage.setItem("token", data?.data);
+        localStorage.setItem("token", data?.token); // ✅ assuming backend returns { token: "..." }
         navigate('/tasks');
       } else {
         toast.error(data.message || "Invalid credentials.");
@@ -38,23 +38,27 @@ function Login() {
       <div className="login-card">
         <h2>Welcome Back 👋</h2>
         <form onSubmit={handleLogin} className="auth-form">
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
+            id="email"
+            name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label>Password</label>
+          <label htmlFor="password">Password</label>
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-                      <span
+            <span
               className="eye-icon"
               onClick={() => setShowPassword((prev) => !prev)}
             >

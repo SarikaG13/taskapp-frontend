@@ -22,16 +22,17 @@ function App() {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
- const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("authToken"));
+const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("token"));
 
 useEffect(() => {
   const handleStorageChange = () => {
-    setIsLoggedIn(!!localStorage.getItem("authToken"));
+    setIsLoggedIn(!!localStorage.getItem("token"));
   };
 
   window.addEventListener("storage", handleStorageChange);
   return () => window.removeEventListener("storage", handleStorageChange);
 }, []);
+
  console.log("🔍 isLoggedIn:", isLoggedIn);
 
   useEffect(() => {

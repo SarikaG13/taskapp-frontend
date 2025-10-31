@@ -77,11 +77,17 @@ class ApiService {
     }));
   }
 
-  static async getAllMyTasks() {
-    return axios.get(`${BASE_URL}/api/tasks/all`, {
-      headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data);
-  }
+ static async getAllMyTasks() {
+  return axios.get(`${BASE_URL}/api/tasks/all`, {
+    headers: ApiService.getHeader()
+  }).then(r => ({
+    statusCode: r.status,
+    data: r.data
+  })).catch(e => ({
+    statusCode: e.response?.status || 500,
+    message: e.response?.data?.message || e.message
+  }));
+}
 
   static async getTaskById(taskId) {
     return axios.get(`${BASE_URL}/api/tasks/task/${taskId}`, {
