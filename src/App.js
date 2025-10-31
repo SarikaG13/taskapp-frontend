@@ -22,18 +22,16 @@ function App() {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
-const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("token"));
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("token"));
 
-useEffect(() => {
-  const handleStorageChange = () => {
-    setIsLoggedIn(!!localStorage.getItem("token"));
-  };
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
 
-  window.addEventListener("storage", handleStorageChange);
-  return () => window.removeEventListener("storage", handleStorageChange);
-}, []);
-
- console.log("🔍 isLoggedIn:", isLoggedIn);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   useEffect(() => {
     const baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -42,8 +40,7 @@ useEffect(() => {
       toast.error("API base URL is missing. Check your .env file.");
     }
   }, []);
-  
-  console.log("✅ Full env:", process.env);
+
   return (
     <ErrorBoundary>
       <div className={isDarkMode ? "dark-theme" : "light-theme"}>
@@ -51,23 +48,11 @@ useEffect(() => {
         <Routes>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route
-  path="/tasks"
-  element={isLoggedIn ? <TasksPage /> : <Navigate to="/login" />}
-/>
-          <Route
-            path="/tasks/add"
-            element={isLoggedIn ? <TaskFormPage /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/tasks/edit/:id"
-            element={isLoggedIn ? <TaskFormPage /> : <Navigate to="/login" />}
-          />
+          <Route path="/tasks" element={isLoggedIn ? <TasksPage /> : <Navigate to="/login" />} />
+          <Route path="/tasks/add" element={isLoggedIn ? <TaskFormPage /> : <Navigate to="/login" />} />
+          <Route path="/tasks/edit/:id" element={isLoggedIn ? <TaskFormPage /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/tasks" />} />
         </Routes>
-         {/* <button onClick={() => toast.success("✅ Toast is working!")}>
-        Test Toast
-      </button> */}
         <Toaster
           position="top-right"
           toastOptions={{

@@ -12,7 +12,7 @@ class ApiService {
 
   static async loginUser(body) {
     return axios.post(`${BASE_URL}/auth/login`, body)
-      .then(r => r.data)
+    .then(r => r.data.data)
       .catch(e => e.response?.data);
   }
 

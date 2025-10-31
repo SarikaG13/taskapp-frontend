@@ -23,7 +23,7 @@ function Login() {
       const data = await response.json();
       if (response.ok) {
         toast.success("Login successful!");
-        localStorage.setItem("token", data?.token); // ✅ assuming backend returns { token: "..." }
+        localStorage.setItem("token", data?.data);
         navigate('/tasks');
       } else {
         toast.error(data.message || "Invalid credentials.");
