@@ -1,5 +1,4 @@
 <<<<<<< HEAD
-<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -74,6 +73,3 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 # Task-App-Manager
 A full-stack productivity app built with React and Spring Boot, featuring secure JWT authentication, dynamic theme toggling, and robust task management. Designed for seamless deployment on Azure , this project showcases deep link support, polished UI/UX, and recruiter-grade documentation.
 >>>>>>> 337a5f68b704ebe1b5bed302deb2a53bdb1118c0
-=======
-# Tasks-App-Manager
->>>>>>> 428f93744f8bb965f824a3f5d4f6dd41d21c6b26

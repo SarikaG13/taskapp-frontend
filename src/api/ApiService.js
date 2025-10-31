@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://taskapp-backend-1-ryqr.onrender.com";
 
 class ApiService {
-  // --- AUTH ---
+
   static async registerUser(body) {
     return axios.post(`${BASE_URL}/auth/register`, body)
       .then(r => r.data)

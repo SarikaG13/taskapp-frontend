@@ -8,7 +8,6 @@ import TaskFormPage from "./pages/TaskFormPage";
 import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import ErrorBoundary from "./common/ErrorBoundary";
-import { useLocation } from "react-router-dom";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {

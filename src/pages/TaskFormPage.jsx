@@ -8,6 +8,7 @@ const TaskFormPage = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
+  const [reminderStatus, setReminderStatus] = useState(false);
 
   const [formData, setFormData] = useState({
     id: '',
@@ -21,7 +22,6 @@ const TaskFormPage = () => {
   const [error, setError] = useState('');
   const [subtasks, setSubtasks] = useState([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
-  const [reminderStatus, setReminderStatus] = useState([]);
   const [showStatus, setShowStatus] = useState(false);
 
   const canAddSubtasks = !!formData.id;
