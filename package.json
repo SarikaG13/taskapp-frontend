@@ -2,7 +2,7 @@
   "name": "tasks-clean",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sarikag13.github.io/taskapp-frontend",
+  "homepage": ".",
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
