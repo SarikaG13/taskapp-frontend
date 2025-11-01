@@ -42,14 +42,14 @@ const TasksPage = () => {
   };
 
   const fetchAllTasks = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [tasksRes, summaryRes] = await Promise.all([
-        ApiService.getAllMyTasks(),
-        ApiService.getTaskSummary()
-      ]);
+  setLoading(true);
+  try {
+    const [tasksRes, summaryRes] = await Promise.all([
+      ApiService.getAllMyTasks(),
+      ApiService.getTaskSummary()
+    ]);
 
-      if (!Array.isArray(tasksRes.data?.data)) {
+    if (!Array.isArray(tasksRes.data?.data)) {
       console.error("🚨 tasksRes.data.data is not an array:", tasksRes.data);
       setTasks([]);
       setFilteredTasks([]);
@@ -59,25 +59,19 @@ const TasksPage = () => {
 
     setTasks(tasksRes.data.data);
     setFilteredTasks(tasksRes.data.data);
+    setError('');
 
-        setTasks(tasksRes.data);
-        setFilteredTasks(tasksRes.data);
-        setError('');
-      } else {
-        setError(tasksRes.message || 'Failed to fetch tasks');
-      }
-
-      if (summaryRes.statusCode === 200) {
-        setTaskSummary(summaryRes.data);
-      } else {
-        toast.error("Failed to fetch task summary");
-      }
-    } catch (error) {
-      setError(error.response?.data?.message || 'Error during initial fetch');
-    } finally {
-      setLoading(false);
+    if (summaryRes.statusCode === 200) {
+      setTaskSummary(summaryRes.data);
+    } else {
+      toast.error("Failed to fetch task summary");
     }
-  }, []);
+  } catch (error) {
+    setError(error.response?.data?.message || 'Error during initial fetch');
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   const handleSearch = async () => {
     setError('');
