@@ -34,8 +34,8 @@ const TaskFormPage = () => {
           const data = res.data;
           setFormData({
             id: data.id,
-            title: data.title,
-            description: data.description,
+            title: data.title || '',
+            description: data.description || '',
             dueDate: data.dueDate?.split("T")[0] || '',
             priority: data.priority || 'MEDIUM',
             completed: data.completed || false
@@ -53,7 +53,7 @@ const TaskFormPage = () => {
   const loadSubtasks = async (taskId) => {
     try {
       const res = await ApiService.getSubtasksByTaskId(taskId);
-      if (res.statusCode === 200) {
+      if (res.statusCode === 200 && Array.isArray(res.data)) {
         setSubtasks(res.data);
       } else {
         toast.error(res.message || "Failed to load subtasks.");
@@ -76,8 +76,21 @@ const TaskFormPage = () => {
     setError("");
     setLoading(true);
 
-    if (!formData.title) {
-      toast.error("Title is required");
+    // ✅ Defensive validation
+    if (!formData.title || formData.title.trim().length < 3) {
+      toast.error("Title must be at least 3 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.description || formData.description.trim().length < 5) {
+      toast.error("Description must be at least 5 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.dueDate) {
+      toast.error("Due date is required");
       setLoading(false);
       return;
     }

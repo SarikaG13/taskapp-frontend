@@ -23,14 +23,14 @@ const TasksPage = () => {
   const fetchOverdueTasks = async () => {
     try {
       const res = await ApiService.getTasksDueTodayAndOverdue();
-      if (res.statusCode === 200) {
+      if (res.statusCode === 200 && Array.isArray(res.data)) {
         setTasks(res.data);
         setFilteredTasks(res.data);
         toast.success("Showing overdue tasks");
       } else {
         toast.error(res.message || "Failed to fetch overdue tasks");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch overdue tasks");
     }
   };
@@ -69,6 +69,17 @@ const TasksPage = () => {
       } else {
         toast.error("Failed to fetch task summary");
       }
+
+      // ✅ Highlight newly created task
+      const lastCreatedId = localStorage.getItem("lastCreatedTaskId");
+      if (lastCreatedId) {
+        const newTask = tasksRes.data.find(t => t.id === parseInt(lastCreatedId));
+        if (newTask) {
+          toast.success(`New task "${newTask.title}" added`);
+        }
+        localStorage.removeItem("lastCreatedTaskId");
+      }
+
     } catch (error) {
       setError(error.response?.data?.message || 'Error during initial fetch');
     } finally {
@@ -80,7 +91,7 @@ const TasksPage = () => {
     setError('');
     try {
       const res = await ApiService.findByTitle(searchQuery);
-      if (res.statusCode === 200) {
+      if (res.statusCode === 200 && Array.isArray(res.data)) {
         setFilteredTasks(res.data);
       } else {
         setError(res.message || 'Error searching tasks');
@@ -100,14 +111,14 @@ const TasksPage = () => {
       if (completionFilter !== 'ALL') {
         const isCompleted = completionFilter === 'TRUE';
         const res = await ApiService.getMyTasksByCompletionStatus(isCompleted);
-        if (res.statusCode === 200) {
+        if (res.statusCode === 200 && Array.isArray(res.data)) {
           result = res.data;
         }
       }
 
       if (priorityFilter !== 'ALL') {
         const res = await ApiService.getMyTasksByPriority(priorityFilter);
-        if (res.statusCode === 200) {
+        if (res.statusCode === 200 && Array.isArray(res.data)) {
           if (completionFilter !== 'ALL') {
             const priorityTasks = res.data;
             result = result.filter(task => priorityTasks.some(pt => pt.id === task.id));
@@ -148,10 +159,10 @@ const TasksPage = () => {
 
       const payload = {
         id: taskId,
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        dueDate: task.dueDate,
+        title: task.title || '',
+        description: task.description || '',
+        priority: task.priority || 'MEDIUM',
+        dueDate: task.dueDate || null,
         completed: newStatus
       };
 
@@ -178,7 +189,7 @@ const TasksPage = () => {
     setError('');
     fetchAllTasks();
   };
-    
+
   return (
   <div className="tasks-container">
     <div className="tasks-header">
