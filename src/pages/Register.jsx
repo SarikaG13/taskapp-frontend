@@ -29,11 +29,18 @@ function Register() {
 
         const data = await response.json();
         if (response.ok) {
-          toast.success("Registration successful!");
+        toast.success("Registration successful!");
+        navigate('/login');
+      } else {
+        if (data.message?.includes("Email already registered")) {
+          toast.error("Email already exists. Please login instead.");
           navigate('/login');
+        } else if (data.message?.includes("Username already taken")) {
+          toast.error("Username is already taken. Try another one.");
         } else {
           toast.error(data.message || "Registration failed.");
         }
+      }
       } catch (error) {
         toast.error("Something went wrong.");
       }

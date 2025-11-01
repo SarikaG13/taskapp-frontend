@@ -16,6 +16,7 @@ const TasksPage = () => {
   const [completionFilter, setCompletionFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [taskSummary, setTaskSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const isAuthenticated = ApiService.isAuthenticated();
 
@@ -40,36 +41,41 @@ const TasksPage = () => {
     return dueDate < today;
   };
 
- const fetchAllTasks = useCallback(async () => {
-  try {
-    const [tasksRes, summaryRes] = await Promise.all([
-      ApiService.getAllMyTasks(),
-      ApiService.getTaskSummary()
-    ]);
+  const fetchAllTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [tasksRes, summaryRes] = await Promise.all([
+        ApiService.getAllMyTasks(),
+        ApiService.getTaskSummary()
+      ]);
 
-    if (tasksRes.statusCode === 200) {
-      if (!Array.isArray(tasksRes.data)) {
-        console.error("🚨 tasksRes.data is not an array:", tasksRes.data);
-        setTasks([]);
-        setFilteredTasks([]);
-        setError("Invalid task data received.");
-        return;
+      if (tasksRes.statusCode === 200) {
+        if (!Array.isArray(tasksRes.data)) {
+          console.error("🚨 tasksRes.data is not an array:", tasksRes.data);
+          setTasks([]);
+          setFilteredTasks([]);
+          setError("Invalid task data received.");
+          return;
+        }
+
+        setTasks(tasksRes.data);
+        setFilteredTasks(tasksRes.data);
+        setError('');
+      } else {
+        setError(tasksRes.message || 'Failed to fetch tasks');
       }
 
-      setTasks(tasksRes.data);
-      setFilteredTasks(tasksRes.data);
-      setError('');
-    } else {
-      setError(tasksRes.message || 'Failed to fetch tasks');
+      if (summaryRes.statusCode === 200) {
+        setTaskSummary(summaryRes.data);
+      } else {
+        toast.error("Failed to fetch task summary");
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || 'Error during initial fetch');
+    } finally {
+      setLoading(false);
     }
-
-    if (summaryRes.statusCode === 200) {
-      setTaskSummary(summaryRes.data);
-    }
-  } catch (error) {
-    setError(error.response?.data?.message || 'Error during initial fetch');
-  }
-}, []);
+  }, []);
 
   const handleSearch = async () => {
     setError('');
@@ -151,19 +157,12 @@ const TasksPage = () => {
         completed: newStatus
       };
 
-      console.log("🔄 Updating task:", payload);
-
       const res = await ApiService.updateTask(payload);
 
       if (res.statusCode === 200) {
-        setTasks(prev =>
-          prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t)
-        );
-        setFilteredTasks(prev =>
-          prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t)
-        );
+        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t));
+        setFilteredTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t));
         toast.success("Task status updated");
-        fetchAllTasks();
       } else {
         setError(res.message || 'Failed to update task status.');
         toast.error("Failed to update task status");

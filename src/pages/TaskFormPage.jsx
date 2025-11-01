@@ -8,7 +8,6 @@ const TaskFormPage = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
-  const [reminderStatus, setReminderStatus] = useState(false);
 
   const [formData, setFormData] = useState({
     id: '',
@@ -19,20 +18,25 @@ const TaskFormPage = () => {
     completed: false
   });
 
-  const [error, setError] = useState('');
   const [subtasks, setSubtasks] = useState([]);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
-  const [showStatus, setShowStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const canAddSubtasks = !!formData.id;
 
   useEffect(() => {
     if (isEdit && id) {
       ApiService.getTaskById(id).then((data) => {
-        setFormData(data);
-        if (data.id) {
-          loadSubtasks(data.id);
-        }
+        setFormData({
+          id: data.id,
+          title: data.title,
+          description: data.description,
+          dueDate: data.dueDate?.split("T")[0] || '',
+          priority: data.priority || 'MEDIUM',
+          completed: data.completed || false
+        });
+        if (data.id) loadSubtasks(data.id);
       });
     }
   }, [id, isEdit]);
@@ -42,9 +46,8 @@ const TaskFormPage = () => {
       const res = await ApiService.getSubtasksByTaskId(taskId);
       if (res.statusCode === 200) {
         setSubtasks(res.data);
-        console.log("🧪 Loaded subtasks:", res.data);
       }
-    } catch (error) {
+    } catch {
       toast.error("Error loading subtasks");
     }
   };
@@ -60,44 +63,45 @@ const TaskFormPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (!formData.title) {
       toast.error("Title is required");
+      setLoading(false);
       return;
     }
 
-    const dataToSend = {
+    const { reminderSent, ...dataToSend } = {
       ...formData,
       dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
-      completed: !!formData.completed,
-      reminderSent: false
+      completed: !!formData.completed
     };
 
-    let response;
-
     try {
-      response = isEdit
+      const response = isEdit
         ? await ApiService.updateTask(dataToSend)
         : await ApiService.createTask(dataToSend);
+
+      if (response?.statusCode === 200 && response?.data) {
+        toast.success(`Task ${isEdit ? "updated" : "created"} successfully!`);
+
+        if (!isEdit && response.data.id) {
+          const newTaskId = response.data.id;
+          setFormData(prev => ({ ...prev, id: newTaskId }));
+          localStorage.setItem("lastCreatedTaskId", newTaskId);
+          await loadSubtasks(newTaskId);
+          setLoading(false);
+          return;
+        }
+
+        navigate("/tasks");
+      } else {
+        toast.error(response?.message || "Failed to save task.");
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || "Error saving task.");
-      return;
-    }
-
-    if (response?.statusCode === 200 && response?.data) {
-      toast.success(`Task ${isEdit ? "updated" : "created"} successfully!`);
-
-      if (!isEdit && response.data.id) {
-        const newTaskId = response.data.id;
-        setFormData(prev => ({ ...prev, id: newTaskId }));
-        localStorage.setItem("lastCreatedTaskId", newTaskId);
-        await loadSubtasks(newTaskId);
-        return;
-      }
-
-      navigate("/tasks");
-    } else {
-      toast.error(response?.message || "Failed to save task.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,12 +130,12 @@ const TaskFormPage = () => {
       const res = await ApiService.createSubtask(subtaskPayload);
       if (res.statusCode === 201) {
         setNewSubtaskTitle('');
-        await loadSubtasks(taskId); 
+        await loadSubtasks(taskId);
         toast.success("Subtask added!");
       } else {
         toast.error(res.message || "Failed to add subtask.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Error adding subtask.");
     }
   };
@@ -150,27 +154,27 @@ const TaskFormPage = () => {
       } else {
         toast.error(res.message || "Failed to update subtask.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Error updating subtask.");
     }
   };
 
-const handleDeleteSubtask = async (subtaskId) => {
-  const confirmDelete = window.confirm("Delete this subtask?");
-  if (!confirmDelete) return;
+  const handleDeleteSubtask = async (subtaskId) => {
+    const confirmDelete = window.confirm("Delete this subtask?");
+    if (!confirmDelete) return;
 
-  try {
-    const res = await ApiService.deleteSubtask(subtaskId);
-    if (res.statusCode === 200 || res.statusCode === 204) {
-      await loadSubtasks(formData.id); 
-      toast.success("Subtask deleted.");
-    } else {
-      toast.error(res.message || "Failed to delete subtask.");
+    try {
+      const res = await ApiService.deleteSubtask(subtaskId);
+      if (res.statusCode === 200 || res.statusCode === 204) {
+        await loadSubtasks(formData.id);
+        toast.success("Subtask deleted.");
+      } else {
+        toast.error(res.message || "Failed to delete subtask.");
+      }
+    } catch {
+      toast.error("Error deleting subtask.");
     }
-  } catch (error) {
-    toast.error("Error deleting subtask.");
-  }
-};
+  };
 
   const toggleSubtaskCompletion = async (subtaskId) => {
     try {
@@ -180,11 +184,11 @@ const handleDeleteSubtask = async (subtaskId) => {
       } else {
         toast.error(res.message || "Failed to toggle subtask.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Error toggling subtask.");
     }
   };
-
+  
 return (
   <div className="task-form-container">
     <div className="section-card">

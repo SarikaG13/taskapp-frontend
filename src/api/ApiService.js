@@ -3,17 +3,31 @@ import axios from "axios";
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://taskapp-backend-1-ryqr.onrender.com";
 
 class ApiService {
+  static handleError(e) {
+    return {
+      statusCode: e.response?.status || 500,
+      message: e.response?.data?.message || e.message,
+      data: null
+    };
+  }
 
+  // AUTH
   static async registerUser(body) {
     return axios.post(`${BASE_URL}/auth/register`, body)
-      .then(r => r.data)
-      .catch(e => e.response?.data);
+      .then(r => ({
+        statusCode: r.status,
+        data: r.data
+      }))
+      .catch(ApiService.handleError);
   }
 
   static async loginUser(body) {
     return axios.post(`${BASE_URL}/auth/login`, body)
-    .then(r => r.data.data)
-      .catch(e => e.response?.data);
+      .then(r => ({
+        statusCode: r.status,
+        data: r.data.data
+      }))
+      .catch(ApiService.handleError);
   }
 
   static saveToken(token) {
@@ -40,22 +54,19 @@ class ApiService {
     };
   }
 
+  // TASKS
   static async createTask(body) {
     return axios.post(`${BASE_URL}/api/tasks`, body, {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 
   static async updateTask(task) {
     if (!task?.id) {
-      console.error("❌ Cannot update task: task.id is missing");
-      return { statusCode: 400, message: "Task ID must not be null" };
+      return { statusCode: 400, message: "Task ID must not be null", data: null };
     }
 
     const payload = {
@@ -71,81 +82,97 @@ class ApiService {
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 
- static async getAllMyTasks() {
-  return axios.get(`${BASE_URL}/api/tasks/all`, {
-    headers: ApiService.getHeader()
-  }).then(r => ({
-    statusCode: r.status,
-    data: r.data
-  })).catch(e => ({
-    statusCode: e.response?.status || 500,
-    message: e.response?.data?.message || e.message
-  }));
-}
+  static async getAllMyTasks() {
+    return axios.get(`${BASE_URL}/api/tasks/all`, {
+      headers: ApiService.getHeader()
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
+  }
 
   static async getTaskById(taskId) {
     return axios.get(`${BASE_URL}/api/tasks/task/${taskId}`, {
       headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
   static async deleteTask(taskId) {
     return axios.delete(`${BASE_URL}/api/tasks/task/${taskId}`, {
       headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.status === 204 ? null : r.data
+    })).catch(ApiService.handleError);
   }
 
   static async getMyTasksByCompletionStatus(completed) {
     return axios.get(`${BASE_URL}/api/tasks/status`, {
       headers: ApiService.getHeader(),
       params: { completed }
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
   static async getMyTasksByPriority(priority) {
     return axios.get(`${BASE_URL}/api/tasks/priority`, {
       headers: ApiService.getHeader(),
       params: { priority }
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
-  //  KPI AND SEARCH 
   static async getTaskSummary() {
     return axios.get(`${BASE_URL}/api/tasks/summary`, {
       headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
   static async getReminderStatus() {
     return axios.get(`${BASE_URL}/api/tasks/reminder-status`, {
       headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data || { message: e.message });
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
   static async findByTitle(title) {
     return axios.get(`${BASE_URL}/api/tasks/search`, {
       headers: ApiService.getHeader(),
       params: { title }
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
   static async getTasksDueTodayAndOverdue() {
     return axios.get(`${BASE_URL}/api/tasks/overdue`, {
       headers: ApiService.getHeader()
-    }).then(r => r.data).catch(e => e.response?.data);
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data
+    })).catch(ApiService.handleError);
   }
 
-  // SUBTASK CRUD
+  // SUBTASKS
   static async createSubtask(subtaskPayload) {
     if (!subtaskPayload?.taskId) {
-      console.error("❌ Cannot create subtask: taskId is missing");
-      return { statusCode: 400, message: "Task ID must not be null" };
+      return { statusCode: 400, message: "Task ID must not be null", data: null };
     }
 
     return axios.post(`${BASE_URL}/api/subtasks`, subtaskPayload, {
@@ -153,10 +180,7 @@ class ApiService {
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 
   static async updateSubtask(subtaskId, payload) {
@@ -165,23 +189,17 @@ class ApiService {
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 
   static async deleteSubtask(subtaskId) {
-  return axios.delete(`${BASE_URL}/api/subtasks/${subtaskId}`, {
-    headers: ApiService.getHeader()
-  }).then(r => ({
-    statusCode: r.status,
-    data: r.status === 204 ? null : r.data 
-  })).catch(e => ({
-    statusCode: e.response?.status || 500,
-    message: e.response?.data?.message || e.message
-  }));
-}
+    return axios.delete(`${BASE_URL}/api/subtasks/${subtaskId}`, {
+      headers: ApiService.getHeader()
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.status === 204 ? null : r.data
+    })).catch(ApiService.handleError);
+  }
 
   static async getSubtasksByTaskId(taskId) {
     return axios.get(`${BASE_URL}/api/subtasks/task/${taskId}/subtasks`, {
@@ -189,10 +207,7 @@ class ApiService {
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 
   static async toggleSubtaskCompletion(subtaskId) {
@@ -201,10 +216,7 @@ class ApiService {
     }).then(r => ({
       statusCode: r.status,
       data: r.data
-    })).catch(e => ({
-      statusCode: e.response?.status || 500,
-      message: e.response?.data?.message || e.message
-    }));
+    })).catch(ApiService.handleError);
   }
 }
 

@@ -8,6 +8,7 @@ import TaskFormPage from "./pages/TaskFormPage";
 import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import ErrorBoundary from "./common/ErrorBoundary";
+import ScrollToTop from "./common/ScrollToTop";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -28,9 +29,12 @@ function App() {
     const handleStorageChange = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("token"));
   }, []);
 
   useEffect(() => {
@@ -45,7 +49,9 @@ function App() {
     <ErrorBoundary>
       <div className={isDarkMode ? "dark-theme" : "light-theme"}>
         <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ScrollToTop />
         <Routes>
+          <Route path="/" element={<Navigate to="/tasks" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/tasks" element={isLoggedIn ? <TasksPage /> : <Navigate to="/login" />} />
