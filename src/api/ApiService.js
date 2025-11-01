@@ -4,6 +4,7 @@ const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://taskapp-backend-
 
 class ApiService {
   static handleError(e) {
+    console.error("❌ API Error:", e.response || e.message);
     return {
       statusCode: e.response?.status || 500,
       message: e.response?.data?.message || e.message,
@@ -99,7 +100,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -141,6 +142,17 @@ class ApiService {
     })).catch(ApiService.handleError);
   }
 
+  static async refreshTaskSummary(setTaskSummary) {
+    try {
+      const res = await ApiService.getTaskSummary();
+      if (res.statusCode === 200) {
+        setTaskSummary(res.data);
+      }
+    } catch (e) {
+      console.error("Failed to refresh summary:", e);
+    }
+  }
+
   static async getReminderStatus() {
     return axios.get(`${BASE_URL}/api/tasks/reminder-status`, {
       headers: ApiService.getHeader()
@@ -165,7 +177,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 

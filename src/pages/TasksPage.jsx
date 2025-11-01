@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-const TasksPage = () => {
+ const TasksPage = () => {
   const [tasks, setTasks] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [error, setError] = useState('');
@@ -70,7 +70,6 @@ const TasksPage = () => {
         toast.error("Failed to fetch task summary");
       }
 
-      // ✅ Highlight newly created task
       const lastCreatedId = localStorage.getItem("lastCreatedTaskId");
       if (lastCreatedId) {
         const newTask = tasksRes.data.find(t => t.id === parseInt(lastCreatedId));
@@ -172,6 +171,12 @@ const TasksPage = () => {
         setTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t));
         setFilteredTasks(prev => prev.map(t => t.id === taskId ? { ...t, completed: newStatus } : t));
         toast.success("Task status updated");
+
+        // ✅ Refresh summary after status change
+        const summaryRes = await ApiService.getTaskSummary();
+        if (summaryRes.statusCode === 200) {
+          setTaskSummary(summaryRes.data);
+        }
       } else {
         setError(res.message || 'Failed to update task status.');
         toast.error("Failed to update task status");

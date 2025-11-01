@@ -56,9 +56,12 @@ const TaskFormPage = () => {
       if (res.statusCode === 200 && Array.isArray(res.data)) {
         setSubtasks(res.data);
       } else {
+        console.error("🚨 Invalid subtasks response:", res);
+        setSubtasks([]);
         toast.error(res.message || "Failed to load subtasks.");
       }
-    } catch {
+    } catch (err) {
+      console.error("❌ Error loading subtasks:", err);
       toast.error("Error loading subtasks");
     }
   };
@@ -76,7 +79,6 @@ const TaskFormPage = () => {
     setError("");
     setLoading(true);
 
-    // ✅ Defensive validation
     if (!formData.title || formData.title.trim().length < 3) {
       toast.error("Title must be at least 3 characters");
       setLoading(false);
@@ -205,6 +207,17 @@ const TaskFormPage = () => {
       const res = await ApiService.toggleSubtaskCompletion(subtaskId);
       if (res.statusCode === 200) {
         await loadSubtasks(formData.id);
+
+        // ✅ Optional: refresh task summary or task itself if subtasks affect progress
+        if (formData.id) {
+          const updatedTask = await ApiService.getTaskById(formData.id);
+          if (updatedTask.statusCode === 200 && updatedTask.data) {
+            setFormData(prev => ({
+              ...prev,
+              completed: updatedTask.data.completed || false
+            }));
+          }
+        }
       } else {
         toast.error(res.message || "Failed to toggle subtask.");
       }
