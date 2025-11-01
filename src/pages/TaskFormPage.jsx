@@ -8,6 +8,7 @@ const TaskFormPage = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
+  
 
   const [formData, setFormData] = useState({
     id: '',
@@ -22,6 +23,8 @@ const TaskFormPage = () => {
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showStatus, setShowStatus] = useState(false);
+  const [reminderStatus, setReminderStatus] = useState(false);
 
   const canAddSubtasks = !!formData.id;
 
@@ -188,7 +191,7 @@ const TaskFormPage = () => {
       toast.error("Error toggling subtask.");
     }
   };
-  
+
 return (
   <div className="task-form-container">
     <div className="section-card">
