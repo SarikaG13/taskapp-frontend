@@ -8,7 +8,6 @@ const TaskFormPage = () => {
   const { id } = useParams();
   const isEdit = Boolean(id);
   const navigate = useNavigate();
-  
 
   const [formData, setFormData] = useState({
     id: '',
@@ -30,16 +29,23 @@ const TaskFormPage = () => {
 
   useEffect(() => {
     if (isEdit && id) {
-      ApiService.getTaskById(id).then((data) => {
-        setFormData({
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          dueDate: data.dueDate?.split("T")[0] || '',
-          priority: data.priority || 'MEDIUM',
-          completed: data.completed || false
-        });
-        if (data.id) loadSubtasks(data.id);
+      ApiService.getTaskById(id).then((res) => {
+        if (res.statusCode === 200 && res.data) {
+          const data = res.data;
+          setFormData({
+            id: data.id,
+            title: data.title,
+            description: data.description,
+            dueDate: data.dueDate?.split("T")[0] || '',
+            priority: data.priority || 'MEDIUM',
+            completed: data.completed || false
+          });
+          if (data.id) loadSubtasks(data.id);
+        } else {
+          toast.error(res.message || "Failed to load task.");
+        }
+      }).catch(() => {
+        toast.error("Error loading task.");
       });
     }
   }, [id, isEdit]);
@@ -49,6 +55,8 @@ const TaskFormPage = () => {
       const res = await ApiService.getSubtasksByTaskId(taskId);
       if (res.statusCode === 200) {
         setSubtasks(res.data);
+      } else {
+        toast.error(res.message || "Failed to load subtasks.");
       }
     } catch {
       toast.error("Error loading subtasks");
@@ -131,7 +139,7 @@ const TaskFormPage = () => {
 
     try {
       const res = await ApiService.createSubtask(subtaskPayload);
-      if (res.statusCode === 201) {
+      if (res.statusCode === 201 || res.statusCode === 200) {
         setNewSubtaskTitle('');
         await loadSubtasks(taskId);
         toast.success("Subtask added!");

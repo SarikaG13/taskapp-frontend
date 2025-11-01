@@ -60,7 +60,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -81,18 +81,18 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
   static async getAllMyTasks() {
-  return axios.get(`${BASE_URL}/api/tasks/all`, {
-    headers: ApiService.getHeader()
-  }).then(r => ({
-    statusCode: r.status,
-    data: r.data.data
-  })).catch(ApiService.handleError);
-}
+    return axios.get(`${BASE_URL}/api/tasks/all`, {
+      headers: ApiService.getHeader()
+    }).then(r => ({
+      statusCode: r.status,
+      data: r.data.data
+    })).catch(ApiService.handleError);
+  }
 
   static async getTaskById(taskId) {
     return axios.get(`${BASE_URL}/api/tasks/task/${taskId}`, {
@@ -118,7 +118,7 @@ class ApiService {
       params: { completed }
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -128,7 +128,7 @@ class ApiService {
       params: { priority }
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -137,7 +137,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -146,7 +146,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -156,7 +156,7 @@ class ApiService {
       params: { title }
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -179,7 +179,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -188,7 +188,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -206,7 +206,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 
@@ -215,7 +215,7 @@ class ApiService {
       headers: ApiService.getHeader()
     }).then(r => ({
       statusCode: r.status,
-      data: r.data
+      data: r.data.data
     })).catch(ApiService.handleError);
   }
 }

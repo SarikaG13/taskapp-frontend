@@ -25,7 +25,10 @@ const TasksPage = () => {
       const res = await ApiService.getTasksDueTodayAndOverdue();
       if (res.statusCode === 200) {
         setTasks(res.data);
+        setFilteredTasks(res.data);
         toast.success("Showing overdue tasks");
+      } else {
+        toast.error(res.message || "Failed to fetch overdue tasks");
       }
     } catch (error) {
       toast.error("Failed to fetch overdue tasks");
@@ -42,36 +45,36 @@ const TasksPage = () => {
   };
 
   const fetchAllTasks = useCallback(async () => {
-  setLoading(true);
-  try {
-    const [tasksRes, summaryRes] = await Promise.all([
-      ApiService.getAllMyTasks(),
-      ApiService.getTaskSummary()
-    ]);
+    setLoading(true);
+    try {
+      const [tasksRes, summaryRes] = await Promise.all([
+        ApiService.getAllMyTasks(),
+        ApiService.getTaskSummary()
+      ]);
 
-    if (!Array.isArray(tasksRes.data?.data)) {
-      console.error("🚨 tasksRes.data.data is not an array:", tasksRes.data);
-      setTasks([]);
-      setFilteredTasks([]);
-      setError("Invalid task data received.");
-      return;
+      if (!Array.isArray(tasksRes.data)) {
+        console.error("🚨 tasksRes.data is not an array:", tasksRes.data);
+        setTasks([]);
+        setFilteredTasks([]);
+        setError("Invalid task data received.");
+        return;
+      }
+
+      setTasks(tasksRes.data);
+      setFilteredTasks(tasksRes.data);
+      setError('');
+
+      if (summaryRes.statusCode === 200) {
+        setTaskSummary(summaryRes.data);
+      } else {
+        toast.error("Failed to fetch task summary");
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || 'Error during initial fetch');
+    } finally {
+      setLoading(false);
     }
-
-    setTasks(tasksRes.data.data);
-    setFilteredTasks(tasksRes.data.data);
-    setError('');
-
-    if (summaryRes.statusCode === 200) {
-      setTaskSummary(summaryRes.data);
-    } else {
-      toast.error("Failed to fetch task summary");
-    }
-  } catch (error) {
-    setError(error.response?.data?.message || 'Error during initial fetch');
-  } finally {
-    setLoading(false);
-  }
-}, []);
+  }, []);
 
   const handleSearch = async () => {
     setError('');
@@ -137,7 +140,6 @@ const TasksPage = () => {
   const toggleComplete = async (taskId, currentCompletedStatus) => {
     try {
       const newStatus = !currentCompletedStatus;
-
       const task = tasks.find(t => t.id === taskId);
       if (!task) {
         toast.error("Task not found");
