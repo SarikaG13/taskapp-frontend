@@ -86,13 +86,13 @@ class ApiService {
   }
 
   static async getAllMyTasks() {
-    return axios.get(`${BASE_URL}/api/tasks/all`, {
-      headers: ApiService.getHeader()
-    }).then(r => ({
-      statusCode: r.status,
-      data: r.data
-    })).catch(ApiService.handleError);
-  }
+  return axios.get(`${BASE_URL}/api/tasks/all`, {
+    headers: ApiService.getHeader()
+  }).then(r => ({
+    statusCode: r.status,
+    data: r.data.data
+  })).catch(ApiService.handleError);
+}
 
   static async getTaskById(taskId) {
     return axios.get(`${BASE_URL}/api/tasks/task/${taskId}`, {

@@ -49,14 +49,16 @@ const TasksPage = () => {
         ApiService.getTaskSummary()
       ]);
 
-      if (tasksRes.statusCode === 200) {
-        if (!Array.isArray(tasksRes.data)) {
-          console.error("🚨 tasksRes.data is not an array:", tasksRes.data);
-          setTasks([]);
-          setFilteredTasks([]);
-          setError("Invalid task data received.");
-          return;
-        }
+      if (!Array.isArray(tasksRes.data?.data)) {
+      console.error("🚨 tasksRes.data.data is not an array:", tasksRes.data);
+      setTasks([]);
+      setFilteredTasks([]);
+      setError("Invalid task data received.");
+      return;
+    }
+
+    setTasks(tasksRes.data.data);
+    setFilteredTasks(tasksRes.data.data);
 
         setTasks(tasksRes.data);
         setFilteredTasks(tasksRes.data);
