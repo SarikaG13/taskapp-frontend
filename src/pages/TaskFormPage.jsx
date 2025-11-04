@@ -311,31 +311,29 @@ return (
           </div>
         </div>
 
-        <div className="form-actions">
-          <button type="submit" className="highlighted-button primary">
-            <i className="fas fa-save"></i> {isEdit ? "Update Task" : "Create Task"}
+        <div className="form-actions-row">
+        <button type="submit" className="highlighted-button primary">
+          <i className="fas fa-save"></i> {isEdit ? "Update Task" : "Create Task"}
+        </button>
+
+        {isEdit && (
+          <button
+            type="button"
+            onClick={handleDeleteTask}
+            className="highlighted-button danger"
+          >
+            <i className="fas fa-trash"></i> Delete Task
           </button>
-          <div className="cancel-right">
-            <button
-              type="button"
-              onClick={() => navigate("/tasks")}
-              className="highlighted-button neutral"
-            >
-              <i className="fas fa-times"></i> Cancel
-            </button>
-          </div>
-          {isEdit && (
-          <div className="delete-right">
-            <button
-              type="button"
-              onClick={handleDeleteTask}
-              className="highlighted-button danger"
-            >
-              <i className="fas fa-trash"></i> Delete Task
-            </button>
-          </div>
         )}
-        </div>
+
+        <button
+          type="button"
+          onClick={() => navigate("/tasks")}
+          className="highlighted-button neutral"
+        >
+          <i className="fas fa-times"></i> Cancel
+        </button>
+      </div>
       </form>
     </div>
 
