@@ -129,6 +129,24 @@ const TaskFormPage = () => {
     }
   };
 
+  const handleDeleteTask = async () => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+  if (!confirmDelete) return;
+
+  try {
+    const res = await ApiService.deleteTask(formData.id);
+    if (res.statusCode === 200) {
+      toast.success("Task deleted successfully");
+      navigate("/tasks"); 
+    } else {
+      toast.error(res.message || "Failed to delete task");
+    }
+  } catch (err) {
+    toast.error("Error deleting task");
+    console.error(err);
+  }
+};
+
   const handleAddSubtask = async (e) => {
     e.preventDefault();
     setError('');
@@ -306,6 +324,17 @@ return (
               <i className="fas fa-times"></i> Cancel
             </button>
           </div>
+          {isEdit && (
+          <div className="delete-right">
+            <button
+              type="button"
+              onClick={handleDeleteTask}
+              className="highlighted-button danger"
+            >
+              <i className="fas fa-trash"></i> Delete Task
+            </button>
+          </div>
+        )}
         </div>
       </form>
     </div>

@@ -140,6 +140,18 @@
   background: linear-gradient(135deg, #93c5fd, #3b82f6);
 }
 
+.delete-right {
+  margin-top: 1rem;
+  text-align: right;
+}
+.highlighted-button.danger {
+  background-color: #e74c3c;
+  color: white;
+}
+.highlighted-button.danger:hover {
+  background-color: #c0392b;
+}
+
 .error-message {
   padding: 12px;
   background-color: #fee2e2;
