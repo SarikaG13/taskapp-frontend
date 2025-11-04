@@ -1,0 +1,31 @@
+.footer {
+  background-color: #f8f8f8;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.footer-links {
+  margin-top: 0.5rem;
+}
+
+.footer-link {
+  color: #007bff;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+.static-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+  line-height: 1.6;
+}
+.static-page h2 {
+  margin-bottom: 1rem;
+}

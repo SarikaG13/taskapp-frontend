@@ -1,0 +1,250 @@
+:root, .light-theme {
+    --primary-bg: #f8fafc; /* Soft Off-White Background */
+    --secondary-bg: #ffffff; /* White for Cards/Panels */
+    --text-color: #1e293b; /* Dark Navy Text */
+    --link-color: #041a1d;
+    --navbar-bg: #1e293b;
+    --button-primary: #13a1ae;
+    --error-bg: #fdecea;
+    --error-text: #e74c3c;
+    --border-color: #ddd;
+}
+
+.dark-theme {
+    --primary-bg: #1e293b; /* Dark Navy Background */
+    --secondary-bg: #2d3748; /* Dark Gray for Cards/Panels */
+    --text-color: #ffffff; /* White Text */
+    --link-color: #90cdf4;
+    --navbar-bg: #2d3748;
+    --button-primary: #4299e1;
+    --error-bg: #742a2a;
+    --error-text: #ffdddd;
+    --border-color: #4a5568;
+}
+
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- NAVBAR STYLES --- */
+.navbar {
+    background-color: var(--navbar-bg);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 100px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    font-size: 20px;
+    margin-right: 40px;
+    color: white;
+}
+
+.desktop-nav {
+    display: flex;
+    gap: 35px;
+    align-items: center;
+}
+
+
+.logo-link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.logo-link:hover {
+    color: #ffcc80;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    color: #ffcc80;
+}
+
+.nav-button {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 16px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    color: #ffcc80;
+}
+
+
+/* --- FOOTER STYLES --- */
+.footer {
+    background-color: var(--navbar-bg);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-links {
+    margin-top: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+.footer-link {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #ffcc80;
+}
+
+
+/* --- AUTH PAGES STYLING --- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px);
+    padding: 20px;
+}
+
+.auth-card {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-card h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+.form-group input:focus {
+    border-color: var(--link-color);
+    outline: none;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--button-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #09393d; 
+}
+
+.auth-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: var(--error-text);
+    background-color: var(--error-bg);
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-color);
+}
+
+.auth-footer a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- TASK PAGE STYLING --- */
+.tasks-container {
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Task Card (Must use secondary-bg for dark mode switch) */
+.task-card {
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 5px solid var(--link-color);
+}
+
+.tasks-header h2, 
+.task-header h3 {
+    color: var(--text-color);
+}
