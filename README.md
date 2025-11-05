@@ -1,4 +1,17 @@
-📘 Task App Manager - Frontend — React + JWT + Render
+![React](https://img.shields.io/badge/Frontend-React-blue)
+![JWT](https://img.shields.io/badge/Auth-JWT-yellow)
+![Render](https://img.shields.io/badge/Deployed%20On-Render-purple)
+![Live Demo](https://img.shields.io/badge/Live-Demo-green)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![GitHub last commit](https://img.shields.io/github/last-commit/SarikaG13/taskapp-frontend)
+![Repo size](https://img.shields.io/github/repo-size/SarikaG13/taskapp-frontend)
+
+A fullstack task management application built with React and Spring Boot.  
+Supports JWT authentication, email reminders, SQL persistence, and modular architecture.  
+Deployed on Render with separate frontend and backend services.
+
+---📘 Task App Manager - Frontend — React + JWT + Render
+
 
 **Live Demo:**: https://taskapp-frontend-8x0n.onrender.com  
 **Backend API**: https://taskapp-backend-1-ryqr.onrender.com
